@@ -4,6 +4,7 @@ set -euo pipefail -x
 
 main() {
     progs="bash/hashdir.sh"
+    progs="$progs python/hashdir.py"
     for i in $progs; do
         $i test_dir
     done

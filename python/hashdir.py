@@ -33,7 +33,7 @@ def hash_path(path):
     h = hashlib.sha256()
     for sha, fpath in shas:
         fpath = fpath.path[len(path) + 1:]
-        line = f"{sha}  {fpath}\n".encode()
+        line = f"{sha}  ./{fpath}\n".encode()
         h.update(line)
 
     finalsha = h.hexdigest()[:8]
