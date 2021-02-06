@@ -1,9 +1,13 @@
+# Overview
+
 Hashdir computes a single hash for a path's contents that can be used to
 compare the path with other paths to see if they are identical.
 
 Only the file's full path name (relative to its parent directory) and contents
 are used to determine uniqueness; other attributes, like modification time,
 file permissions, or owner, are not used.
+
+# Methodology
 
 The method used is to:
 - Go through all regular files and links in the specified path, recursively
@@ -26,10 +30,16 @@ output should match the following:
 
     ( cd path && sha256deep -rl . | sort | sha256sum )
 
-As a research project to learn more languages, I will implement hashdir in many languages:
+# Applied Research
 
+As a way to gain experience in up and cominglanguages, I will implement hashdir
+in the following:
+
+## Reference Implemenations
 - Bash (find + sha256sum)
 - Python
+
+## Learning Implementations
 - Rust
 - Go
 - Haskell
