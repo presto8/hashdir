@@ -45,7 +45,7 @@ def main():
     for path in args.pathspec:
         if os.path.isdir(path):
             result = hash_path(path)
-            print(result.sha, result.path)
+            print(f"{result.sha}  {result.path}")
 
 
 def parse_args():
