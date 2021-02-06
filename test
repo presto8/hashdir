@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail -x
+
+main() {
+    progs="bash/hashdir.sh"
+    for i in $progs; do
+        $i test_dir
+    done
+}
+
+main "$@"
