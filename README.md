@@ -44,3 +44,4 @@ in the following:
 - Go
 - Haskell
 - Nim
+- node/JavaScript
