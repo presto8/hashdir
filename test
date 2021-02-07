@@ -5,6 +5,7 @@ set -euo pipefail
 main() {
     progs="bash/hashdir.sh"
     progs="$progs python/hashdir.py"
+    progs="$progs rust/target/debug/hashdir"
     for i in $progs; do
         $i test_dir
     done

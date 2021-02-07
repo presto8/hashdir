@@ -26,16 +26,22 @@ fn hash_path(path: &Path) -> String {
     hex::encode(&result.as_ref())
 }
 
+fn hash_link(path: &Path) -> String {
+    let contents = path.read_link().unwrap();
+    let mut hasher = Context::new(&SHA256);
+    hasher.update(contents.to_str().unwrap().as_bytes());
+    let result = hasher.finish();
+    hex::encode(&result.as_ref())
+}
+
 fn walk_fs(path: &Path) {
     for entry in WalkDir::new(path)
             .into_iter()
             .filter_map(|v| v.ok())
             .filter(|e| !e.file_type().is_dir()) {
-                // if entry.file_type().is_symlink() {
                 if entry.file_type().is_symlink() {
-                    let hasher = Context::new(&SHA256);
-                    // hasher.update(entry.path().read_link());
-                    println!("{}  {}", "symlink", entry.path().display());
+                    let hash = hash_link(entry.path());
+                    println!("{}  {}",hash, entry.path().display());
                 } else {
                     println!("{}  {}", hash_path(entry.path()), entry.path().display());
                 }

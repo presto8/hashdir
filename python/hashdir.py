@@ -3,9 +3,7 @@
 import argparse
 import hashlib
 import os
-import subprocess
-import threading
-import queue
+import stat
 from collections import namedtuple
 
 
@@ -21,6 +19,8 @@ def hash_file(path):
     h = hashlib.sha256()
     if os.path.islink(path):
         h.update(os.readlink(path).encode())
+    elif stat.S_ISFIFO(os.stat(path).st_mode):
+        return "fifo"
     else:
         h.update(open(path, 'rb').read())
     return h.hexdigest()
