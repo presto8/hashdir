@@ -28,16 +28,10 @@ def hash_file(path):
 
 def hash_path(path):
     shas = [(hash_file(x), x) for x in scandir_r(path)]
-    shas.sort()
-
-    h = hashlib.sha256()
-    for sha, fpath in shas:
-        fpath = fpath.path[len(path) + 1:]
-        line = f"{sha}  ./{fpath}\n".encode()
-        h.update(line)
-
-    finalsha = h.hexdigest()[:8]
-
+    chop = len(path) + 1
+    lines = [f"{sha}  ./{fpath.path[chop:]}\n" for sha, fpath in shas]
+    lines.sort()
+    finalsha = hashlib.sha256("".join(lines).encode()).hexdigest()[:8]
     return namedtuple('ShaResults', 'path sha')._make([path, finalsha])
 
 
