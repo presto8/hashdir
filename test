@@ -4,7 +4,7 @@ set -euo pipefail
 
 test_bash() ( cd bash && ./hashdir.sh "$@" ; )
 test_python() ( cd python && ./hashdir.py "$@" ; )
-test_rust() ( cd rust && cargo build --release && ./target/release/hashdir "$@" ; )
+test_rust() ( cd rust && cargo build --release --quiet && ./target/release/hashdir "$@" ; )
 test_go() ( cd go && go build . && ./go "$@" ; )
 
 main() {
