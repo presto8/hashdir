@@ -1,1 +1,0 @@
-ghc -dynamic -o hashdir hashdir.hs
