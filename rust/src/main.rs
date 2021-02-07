@@ -34,22 +34,36 @@ fn hash_link(path: &Path) -> String {
     hex::encode(&result.as_ref())
 }
 
-fn walk_fs(path: &Path) {
+fn walk_fs(path: &Path) -> Vec<String> {
+    let mut result = Vec::new();
     for entry in WalkDir::new(path)
             .into_iter()
             .filter_map(|v| v.ok())
             .filter(|e| !e.file_type().is_dir()) {
-                if entry.file_type().is_symlink() {
-                    let hash = hash_link(entry.path());
-                    println!("{}  {}",hash, entry.path().display());
-                } else {
-                    println!("{}  {}", hash_path(entry.path()), entry.path().display());
-                }
+                let hash = {
+                    if entry.file_type().is_symlink() {
+                        hash_link(entry.path())
+                    } else {
+                        hash_path(entry.path())
+                    }
+                };
+                let relpath = entry.path().strip_prefix(path).unwrap();
+                let line = format!("{}  ./{}\n", hash, relpath.display());
+                result.push(line);
             }
+    result.sort();
+    result
 }
 
 fn main() {
     let args = Cli::from_args();
-    println!("Path: {}", args.path.display());
-    walk_fs(&args.path);
+    let hashes = walk_fs(&args.path);
+    let mut hasher = Context::new(&SHA256);
+    for hash in &hashes {
+        hasher.update(hash.as_bytes());
+        // print!("{}", hash);
+    }
+    let result = hasher.finish();
+    let megahash = hex::encode(&result.as_ref());
+    println!("{}  {}", &megahash[..8], args.path.display());
 }
