@@ -2,13 +2,15 @@
 
 set -euo pipefail
 
+test_bash() ( cd bash && ./hashdir.sh "$@" ; )
+test_python() ( cd python && ./hashdir.py "$@" ; )
+test_rust() ( cd rust && cargo build --release && ./target/release/hashdir "$@" ; )
+
 main() {
-    progs="bash/hashdir.sh"
-    progs="$progs python/hashdir.py"
-    progs="$progs rust/target/debug/hashdir"
-    for i in $progs; do
-        $i test_dir
-    done
+    target="../test_dir"
+    test_bash "$target"
+    test_python "$target"
+    test_rust "$target"
 }
 
 main "$@"
