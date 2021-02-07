@@ -61,7 +61,6 @@ fn main() {
     let mut hasher = Context::new(&SHA256);
     for hash in &hashes {
         hasher.update(hash.as_bytes());
-        // print!("{}", hash);
     }
     let result = hasher.finish();
     let megahash = hex::encode(&result.as_ref());
