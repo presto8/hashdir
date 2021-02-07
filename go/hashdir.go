@@ -2,21 +2,38 @@ package main
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
-    "strings"
-    "sort"
+	"sort"
+	"strings"
 )
 
 func hash_path(path string) []byte {
-	input := strings.NewReader(path)
-	hash := sha256.New()
-	if _, err := io.Copy(hash, input); err != nil {
+	f, err := os.Open(path)
+	if err != nil {
 		log.Fatal(err)
 	}
+	defer f.Close()
+
+	hash := sha256.New()
+	if _, err := io.Copy(hash, f); err != nil {
+		log.Fatal(err)
+	}
+
+	return hash.Sum(nil)
+}
+
+func hash_link(path string) []byte {
+	target, err := os.Readlink(path)
+	if err != nil {
+		return nil
+	}
+	hash := sha256.New()
+	hash.Write([]byte(target))
 	return hash.Sum(nil)
 }
 
@@ -27,12 +44,17 @@ func walk_path(toppath string) []string {
 			if err != nil {
 				return err
 			}
-            if ! info.IsDir() {
-                hash := hash_path(path)
-                path = strings.TrimPrefix(path, toppath)
-                line := fmt.Sprintf("%x  .%s\n", hash, path)
-                result = append(result, line)
-            }
+			hash := []byte("")
+			if info.Mode()&os.ModeSymlink != 0 {
+				hash = hash_link(path)
+			} else if !info.IsDir() {
+				hash = hash_path(path)
+			} else {
+				return nil
+			}
+			path = strings.TrimPrefix(path, toppath)
+			line := fmt.Sprintf("%s  .%s\n", hex.EncodeToString(hash), path)
+			result = append(result, line)
 			return nil
 		})
 
@@ -40,16 +62,16 @@ func walk_path(toppath string) []string {
 		log.Println(err)
 	}
 
-    sort.Strings(result)
-    return result;
+	sort.Strings(result)
+	return result
 }
 
 func main() {
-    hashes := walk_path("../test_dir")
+	path := os.Args[1]
+	hashes := walk_path(path)
 	finalhash := sha256.New()
-    for _, hash := range hashes {
-        fmt.Printf(hash)
-        finalhash.Sum([]byte(hash))
-    }
-	fmt.Printf("%x", finalhash.Sum(nil))
+	for _, hash := range hashes {
+		finalhash.Write([]byte(hash))
+	}
+	fmt.Printf("%s  %s\n", hex.EncodeToString(finalhash.Sum(nil))[:8], path)
 }
