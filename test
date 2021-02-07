@@ -2,17 +2,38 @@
 
 set -euo pipefail
 
-test_bash() ( cd bash && ./hashdir.sh "$@" ; )
-test_python() ( cd python && ./hashdir.py "$@" ; )
-test_rust() ( cd rust && cargo build --release --quiet && ./target/release/hashdir "$@" ; )
-test_go() ( cd go && go build . && ./go "$@" ; )
-
 main() {
-    target="../test_dir"
-    test_bash "$target"
-    test_python "$target"
-    test_rust "$target"
-    test_go "$target"
+    build
+
+    d=test_dir
+    tests=()
+    tests+=("bash/hashdir.sh $d")
+    tests+=("python/hashdir.py $d")
+    tests+=("rust/target/release/hashdir $d")
+    tests+=("go/go $d")
+
+    run_tests "${tests[@]}"
+    run_hyperfine "${tests[@]}"
+}
+
+
+build() {
+    echo ":: building"
+    ( cd rust && cargo build --release --quiet )
+    ( cd go && go build . ; )
+    # ( cd nim && nimble build --silent ; )
+}
+
+run_tests() {
+    echo ":: testing for correctness"
+    for cmd in "$@"; do
+        $cmd
+    done
+}
+
+run_hyperfine() {
+    echo ":: benchmarking"
+    hyperfine "$@"
 }
 
 main "$@"
