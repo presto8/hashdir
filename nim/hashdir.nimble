@@ -11,3 +11,4 @@ bin           = @["hashdir"]
 # Dependencies
 
 requires "nim >= 1.4.2"
+requires "nimSHA2"
