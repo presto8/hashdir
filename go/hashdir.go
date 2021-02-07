@@ -3,58 +3,53 @@ package main
 import (
 	"crypto/sha256"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
-	"io"
+    "strings"
+    "sort"
 )
 
-func hash_path(path string) {
-	const BufferSize = 8096
-	file, err := os.Open(path)
-	if err != nil {
-		fmt.Println(err)
-		return
+func hash_path(path string) []byte {
+	input := strings.NewReader(path)
+	hash := sha256.New()
+	if _, err := io.Copy(hash, input); err != nil {
+		log.Fatal(err)
 	}
-	defer file.Close()
-
-	buffer := make([]byte, BufferSize)
-	for {
-		bytesread, err := file.Read(buffer)
-
-		if err != nil {
-			if err != io.EOF {
-				fmt.Println(err)
-			}
-
-			break
-		}
-
-		fmt.Println("bytes read: ", bytesread)
-		fmt.Println("bytestream to string: ", string(buffer[:bytesread]))
-	}
+	return hash.Sum(nil)
 }
 
-func walk_path(toppath string) {
+func walk_path(toppath string) []string {
 	result := make([]string, 0)
 	err := filepath.Walk(toppath,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			hash_path(path)
-			hash := sha256.Sum256([]byte("hello world\n"))
-			fmt.Printf("%x", hash)
-			result = append(result, path)
-			fmt.Println(path, info.Size())
+            if ! info.IsDir() {
+                hash := hash_path(path)
+                path = strings.TrimPrefix(path, toppath)
+                line := fmt.Sprintf("%x  .%s\n", hash, path)
+                result = append(result, line)
+            }
 			return nil
 		})
 
 	if err != nil {
 		log.Println(err)
 	}
+
+    sort.Strings(result)
+    return result;
 }
 
 func main() {
-	walk_path("../test_dir")
+    hashes := walk_path("../test_dir")
+	finalhash := sha256.New()
+    for _, hash := range hashes {
+        fmt.Printf(hash)
+        finalhash.Sum([]byte(hash))
+    }
+	fmt.Printf("%x", finalhash.Sum(nil))
 }
