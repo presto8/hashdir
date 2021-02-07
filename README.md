@@ -7,6 +7,12 @@ Only the file's full path name (relative to its parent directory) and contents
 are used to determine uniqueness; other attributes, like modification time,
 file permissions, or owner, are not used.
 
+# Results (Quick Start)
+
+Running the test harness will run all of the implementations and compare the results.
+
+    ./test
+
 # Methodology
 
 The method used is to:
