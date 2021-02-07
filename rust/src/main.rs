@@ -1,3 +1,49 @@
+use structopt::StructOpt;
+use walkdir::WalkDir;
+use std::path::{Path, PathBuf};
+use std::io::{BufReader, Read};
+use std::fs;
+use ring::digest::{Context, SHA256};
+
+#[derive(StructOpt)]
+struct Cli {
+    /// The path to compute the hashdir for
+    #[structopt(parse(from_os_str))]
+    path: PathBuf,
+}
+
+fn hash_path(path: &Path) -> String {
+    let file = fs::File::open(path).unwrap();
+    let mut reader = BufReader::new(&file);
+    let mut hasher = Context::new(&SHA256);
+    let mut buffer = [0; 8096];
+    loop {
+        let n = reader.read(&mut buffer).unwrap();
+        if n == 0 { break; }
+        hasher.update(&buffer[0..n]);
+    }
+    let result = hasher.finish();
+    hex::encode(&result.as_ref())
+}
+
+fn walk_fs(path: &Path) {
+    for entry in WalkDir::new(path)
+            .into_iter()
+            .filter_map(|v| v.ok())
+            .filter(|e| !e.file_type().is_dir()) {
+                // if entry.file_type().is_symlink() {
+                if entry.file_type().is_symlink() {
+                    let hasher = Context::new(&SHA256);
+                    // hasher.update(entry.path().read_link());
+                    println!("{}  {}", "symlink", entry.path().display());
+                } else {
+                    println!("{}  {}", hash_path(entry.path()), entry.path().display());
+                }
+            }
+}
+
 fn main() {
-    println!("Hello, world!");
+    let args = Cli::from_args();
+    println!("Path: {}", args.path.display());
+    walk_fs(&args.path);
 }
