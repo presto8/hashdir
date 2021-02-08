@@ -11,28 +11,32 @@ main() {
     tests+=("python/hashdir.py $d")
     tests+=("rust/target/release/hashdir $d")
     tests+=("go/go $d")
+    tests+=("$(find haskell -executable -name hashdir -type f) $d")
 
     run_tests "${tests[@]}"
     run_hyperfine "${tests[@]}"
 }
 
+info() { echo -e "\033[36m:: $*\e[0m" ; }
 
 build() {
-    echo ":: building"
+    info "building"
     ( cd rust && cargo build --release --quiet )
     ( cd go && go build . ; )
+    ( cd haskell && cabal build ; )
     # ( cd nim && nimble build --silent ; )
 }
 
 run_tests() {
-    echo ":: testing for correctness"
+    info "testing for correctness"
     for cmd in "$@"; do
+        info "$cmd"
         $cmd
     done
 }
 
 run_hyperfine() {
-    echo ":: benchmarking"
+    info "benchmarking"
     hyperfine "$@"
 }
 
