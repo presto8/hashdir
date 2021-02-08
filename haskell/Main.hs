@@ -10,7 +10,7 @@ import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T
 import Text.Printf (printf)
 import System.Directory.PathWalk
--- import System.Posix.Files
+import System.Environment
 
 print_sha = print digest
   where
@@ -28,19 +28,14 @@ toHex :: B.ByteString -> String
 toHex bytes = B.unpack bytes >>= printf "%02x"
 
 -- https://hackage.haskell.org/package/pathwalk-0.3.1.2/docs/System-Directory-PathWalk.html
-my_walk path = pathWalk path $ \dir subdirs files -> do
+hash_path path = pathWalk path $ \dir subdirs files -> do
   forM_ files $ \file -> do
     let fullpath = dir ++ "/" ++ file
     let fullpath' = T.unpack $ T.replace (T.pack path) "" (T.pack fullpath)
-    hashFile fullpath >>= putStr . take 8 . toHex
-    putStrLn $ "  ." ++ fullpath'
-    -- when (getSymbolicLinkStatus file . isSymbolicLink) $ do
-      -- hashFile file >>= putStrLn . toHex
+    fullhash <- hashFile fullpath
+    putStrLn $ (take 8 $ toHex fullhash) ++ "  ." ++ fullpath
 
 main :: IO ()
 main = do
-    -- print_sha
-    -- print_sha2
-    -- hashFile path >>= putStrLn . toHex
-    let path = "../test_dir"
-    my_walk path
+    args <- getArgs
+    hash_path $ head args
