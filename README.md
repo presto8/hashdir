@@ -49,5 +49,8 @@ in the following:
 - Rust
 - Go
 - Haskell
-- Nim
 - node/JavaScript
+- Common Lisp (with SLY)
+- Scala
+- Clojure
+- Nim
