@@ -45,13 +45,9 @@ toHex bytes = B.unpack bytes >>= printf "%02x"
 my_walk path = pathWalk path $ \dir subdirs files -> do
   forM_ files $ \file -> do
     let fullpath = dir ++ "/" ++ file
-    -- let trimpath = replacedoubleslash fullpath
-    -- print trimpath
     let fullpath' = unpack $ replace (pack path) "" (pack fullpath)
-    -- let hash' = printf "%02x" (BS.unpack $ hashFile fullpath)
-    hashFile fullpath >>= putStr . toHex
+    hashFile fullpath >>= putStr . take 8 . toHex
     putStrLn $ "  ." ++ fullpath'
-    -- print $ T.replace path "" "foo"
     -- when (getSymbolicLinkStatus file . isSymbolicLink) $ do
       -- hashFile file >>= putStrLn . toHex
 
