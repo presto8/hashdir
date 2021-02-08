@@ -2,11 +2,7 @@
 
 module Main where
 
-import Control.Monad (foldM, forM_, when)
-import System.Directory (doesDirectoryExist, listDirectory) -- from "directory"
-import System.FilePath ((</>), FilePath) -- from "filepath"
-import Control.Monad.Extra (partitionM) -- from the "extra" package
-
+import Control.Monad (forM_, when)
 import qualified Data.ByteString
 import qualified Crypto.Hash.SHA256 as SHA256
 
@@ -19,18 +15,10 @@ import Text.Printf (printf)
 import System.Directory.PathWalk
 import System.Posix.Files
 
--- https://stackoverflow.com/questions/51712083/recursively-search-directories-for-all-files-matching-name-criteria-in-haskell
-traverseDir :: (FilePath -> Bool) -> (b -> FilePath -> IO b) -> b -> FilePath -> IO b
-traverseDir validDir transition =
-    let go state dirPath =
-            do names <- listDirectory dirPath
-               let paths = map (dirPath </>) names
-               (dirPaths, filePaths) <- partitionM doesDirectoryExist paths
-               state' <- foldM transition state filePaths -- process current dir
-               foldM go state' (filter validDir dirPaths) -- process subdirs
-     in go
+import Data.ByteString.Builder
 
--- http://hackage.haskell.org/package/cryptohash-sha256-0.11.102.0/docs/Crypto-Hash-SHA256.html
+import qualified Data.Text as T
+import Data.Text(pack, unpack, replace)
 
 print_sha = print digest
   where
@@ -51,20 +39,26 @@ toHex bytes = Strict.unpack bytes >>= printf "%02x"
 -- hashEntry :: FilePath -> String
 -- hashEntry path = hashFile path >>= putStrLn . toHex
 
+
 -- https://hackage.haskell.org/package/pathwalk-0.3.1.2/docs/System-Directory-PathWalk.html
 
 my_walk path = pathWalk path $ \dir subdirs files -> do
   forM_ files $ \file -> do
-    hashFile file >>= putStrLn . toHex
+    let fullpath = dir ++ "/" ++ file
+    -- let trimpath = replacedoubleslash fullpath
+    -- print trimpath
+    let fullpath' = unpack $ replace (pack path) "" (pack fullpath)
+    -- let hash' = printf "%02x" (Strict.unpack $ hashFile fullpath)
+    hashFile fullpath >>= putStr . toHex
+    putStrLn $ "  ." ++ fullpath'
+    -- print $ T.replace path "" "foo"
+    -- when (getSymbolicLinkStatus file . isSymbolicLink) $ do
+      -- hashFile file >>= putStrLn . toHex
 
 main :: IO ()
--- main = putStrLn "Hello, Haskell!"
 main = do
-    -- traverseDir (\_ -> True) (\() path -> print path) () "../test_dir"
-    traverseDir (\_ -> True) (\() path -> hashFile path >>= putStrLn . toHex) () "../test_dir"
-    -- traverseDir (\_ -> True) (\() path -> hashEntry path) () "../test_dir"
-    print_sha
-    print_sha2
-    let path = "../test_dir/file1"
-    hashFile path >>= putStrLn . toHex
-    my_walk "."
+    -- print_sha
+    -- print_sha2
+    -- hashFile path >>= putStrLn . toHex
+    let path = "../test_dir"
+    my_walk path
