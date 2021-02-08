@@ -7,8 +7,8 @@ import qualified Data.ByteString
 import qualified Crypto.Hash.SHA256 as SHA256
 
 import Crypto.Hash.SHA256 (hashlazy)
-import qualified Data.ByteString as Strict
-import qualified Data.ByteString.Lazy as Lazy
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as BL
 import System.Process (system)
 import Text.Printf (printf)
 
@@ -30,11 +30,11 @@ print_sha2 = print $ SHA256.hash "hello"
 
 -- https://stackoverflow.com/questions/9502777/sha1-encoding-in-haskell
 
-hashFile :: FilePath -> IO Strict.ByteString
-hashFile = fmap hashlazy . Lazy.readFile
+hashFile :: FilePath -> IO B.ByteString
+hashFile = fmap hashlazy . BL.readFile
 
-toHex :: Strict.ByteString -> String
-toHex bytes = Strict.unpack bytes >>= printf "%02x"
+toHex :: B.ByteString -> String
+toHex bytes = B.unpack bytes >>= printf "%02x"
 
 -- hashEntry :: FilePath -> String
 -- hashEntry path = hashFile path >>= putStrLn . toHex
@@ -48,7 +48,7 @@ my_walk path = pathWalk path $ \dir subdirs files -> do
     -- let trimpath = replacedoubleslash fullpath
     -- print trimpath
     let fullpath' = unpack $ replace (pack path) "" (pack fullpath)
-    -- let hash' = printf "%02x" (Strict.unpack $ hashFile fullpath)
+    -- let hash' = printf "%02x" (BS.unpack $ hashFile fullpath)
     hashFile fullpath >>= putStr . toHex
     putStrLn $ "  ." ++ fullpath'
     -- print $ T.replace path "" "foo"
