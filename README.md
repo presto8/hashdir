@@ -46,11 +46,12 @@ in the following:
 - Python
 
 ## Learning Implementations
-- Rust
-- Go
-- Haskell
+- Rust - [DONE](rust/)
+- Go - [DONE](go/)
+- Haskell - [IN PROGRESS](haskell/)
 - node/JavaScript
 - Common Lisp (with SLY)
 - Scala
 - Clojure
-- Nim
+- Nim - [ABANDONED](nim/)
+- Crystal
