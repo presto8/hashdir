@@ -42,7 +42,7 @@ As a way to gain experience in up and cominglanguages, I will implement hashdir
 in the following:
 
 ## Reference Implemenations
-- Bash (find + sha256sum)
+- Bash (find + sha256sum) - [DONE](bash)
 - Python
 
 ## Learning Implementations
@@ -55,3 +55,4 @@ in the following:
 - Clojure
 - Nim - [ABANDONED](nim/)
 - Crystal
+- D
