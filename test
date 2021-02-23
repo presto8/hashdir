@@ -17,7 +17,7 @@ main() {
     run_hyperfine "${tests[@]}"
 }
 
-info() { echo -e "\033[36m:: $*\e[0m" ; }
+info() { echo -e "\e[36m:: $*\e[0m" ; }
 
 build() {
     info "building"
