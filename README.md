@@ -56,3 +56,5 @@ in the following:
 - Nim - [ABANDONED](nim/)
 - Crystal
 - D
+- Erlang
+- OCaml
