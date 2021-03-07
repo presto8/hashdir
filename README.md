@@ -58,3 +58,4 @@ in the following:
 - D
 - Erlang
 - OCaml
+- Zig
