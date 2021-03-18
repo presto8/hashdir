@@ -50,7 +50,7 @@ in the following:
 - Go - [DONE](go/)
 - Haskell - [IN PROGRESS](haskell/)
 - node/JavaScript
-- Common Lisp (with SLY)
+- Common Lisp (with SLY) (or Roswell https://github.com/roswell/roswell) (or https://news.ycombinator.com/item?id=26493588)
 - Scala
 - Clojure
 - Nim - [ABANDONED](nim/)
@@ -59,3 +59,4 @@ in the following:
 - Erlang
 - OCaml
 - Zig
+- Janet (https://janet-lang.org/)
