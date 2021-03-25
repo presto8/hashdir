@@ -60,3 +60,4 @@ in the following:
 - OCaml
 - Zig
 - Janet (https://janet-lang.org/)
+- Julia
