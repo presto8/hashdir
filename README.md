@@ -61,3 +61,5 @@ in the following:
 - Zig
 - Janet (https://janet-lang.org/)
 - Julia
+- Elixir
+- V
