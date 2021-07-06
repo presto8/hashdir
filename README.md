@@ -63,3 +63,4 @@ in the following:
 - Julia
 - Elixir
 - V
+- Forth
