@@ -64,3 +64,4 @@ in the following:
 - Elixir
 - V
 - Forth
+- Racket
