@@ -65,3 +65,4 @@ in the following:
 - V
 - Forth
 - Racket
+- Ada
