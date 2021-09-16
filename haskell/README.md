@@ -12,3 +12,7 @@ Understanding IO is a huge deal in being able to write successful Haskell
 programs.
 
 Like Rust, if Haskell compiles, then it usually works. This was the case here.
+
+
+TODO
+* https://blog.moertel.com/posts/2007-02-22-a-simple-directory-tree-printer-in-haskell.html
