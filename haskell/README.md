@@ -16,3 +16,4 @@ Like Rust, if Haskell compiles, then it usually works. This was the case here.
 
 TODO
 * https://blog.moertel.com/posts/2007-02-22-a-simple-directory-tree-printer-in-haskell.html
+* Guard: https://pbrisbin.com/posts/automated-unit-testing-in-haskell/
