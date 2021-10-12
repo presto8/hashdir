@@ -68,3 +68,4 @@ in the following:
   - Learn Racket programming language  https://news.ycombinator.com/item?id=20392448
 - Ada
   - https://pyjarrett.github.io/programming-with-ada/four-months-summary.html
+- Kotlin
