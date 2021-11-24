@@ -11,8 +11,7 @@ get_hashes() (
     cd "$1" &>/dev/null
     find . '(' -type f -o -type l ')' | while read -r path; do
         if [[ -L $path ]]; then
-            # need the hack below otherwise readlink will echo a newline
-            echo -n "$(readlink "$path")" | sha256sum | awk "{ print \$1 \"  $path\"}"
+            readlink --no-newline "$path" | sha256sum | awk "{ print \$1 \"  $path\"}"
         else
             sha256sum "$path"
         fi
