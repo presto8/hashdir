@@ -69,3 +69,4 @@ in the following:
 - Ada
   - https://pyjarrett.github.io/programming-with-ada/four-months-summary.html
 - Kotlin
+- Ruby
